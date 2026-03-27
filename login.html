@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión | Salud Campus</title>
+    <meta name="description" content="Inicia sesión en Salud Campus para acceder a tu evaluación de bienestar.">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts – Outfit (same as project) -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* ── Login-page specific styles ─────────────────────────── */
+
+        .login-page-wrapper {
+            width: 100%;
+            min-height: calc(100vh - var(--nav-height) - 2.8rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .login-card {
+            width: min(440px, 100%);
+            padding: clamp(1.6rem, 4vw, 2.6rem);
+            text-align: center;
+            animation: fadeInUp 0.45s ease;
+        }
+
+        /* Brand icon circle */
+        .login-brand {
+            width: 68px;
+            height: 68px;
+            margin: 0 auto 1.2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            box-shadow: 0 10px 28px rgba(31, 75, 132, 0.28);
+            color: #ffffff;
+        }
+
+        .login-brand i {
+            width: 30px;
+            height: 30px;
+        }
+
+        .login-card h1 {
+            font-size: clamp(1.4rem, 3.2vw, 1.85rem);
+            color: var(--primary-dark);
+            margin-bottom: 0.3rem;
+            line-height: 1.2;
+        }
+
+        .login-card .subtitle {
+            color: var(--text-muted);
+            font-size: 0.96rem;
+            margin-bottom: 1.6rem;
+        }
+
+        /* Form fields */
+        .login-form {
+            display: grid;
+            gap: 0.85rem;
+            text-align: left;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.32rem;
+        }
+
+        .field-group label {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-soft);
+            padding-left: 0.15rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            border: 1px solid rgba(15, 23, 42, 0.14);
+            border-radius: 12px;
+            padding: 0.82rem 1rem;
+            padding-left: 2.7rem;
+            font-size: 0.97rem;
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.88);
+            font-family: inherit;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(31, 75, 132, 0.12);
+        }
+
+        .input-wrapper input::placeholder {
+            color: #94a3b8;
+        }
+
+        .input-wrapper .field-icon {
+            position: absolute;
+            left: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        /* Password toggle */
+        .toggle-password {
+            position: absolute;
+            right: 0.7rem;
+            top: 50%;
+            transform: translateY(-50%);
+            appearance: none;
+            border: none;
+            background: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+        }
+
+        .toggle-password:hover {
+            color: var(--primary-color);
+        }
+
+        .toggle-password i {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Row between inputs and button */
+        .form-extras {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            font-size: 0.88rem;
+        }
+
+        .remember-label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            color: var(--text-soft);
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .remember-label input[type="checkbox"] {
+            accent-color: var(--primary-color);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .forgot-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* Submit button */
+        .login-submit {
+            margin-top: 0.4rem;
+            width: 100%;
+            padding: 0.88rem 1.2rem;
+            font-size: 1rem;
+        }
+
+        /* Error / status messages */
+        .login-error {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            color: var(--danger);
+            background: rgba(220, 38, 38, 0.08);
+            border: 1px solid rgba(220, 38, 38, 0.18);
+            border-radius: 10px;
+            padding: 0.65rem 0.9rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            animation: fadeInUp 0.25s ease;
+        }
+
+        .login-error.visible {
+            display: flex;
+        }
+
+        .login-error i {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin: 0.6rem 0;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            font-weight: 500;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        /* Back to home link */
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.34rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 600;
+            margin-top: 0.3rem;
+            transition: color 0.2s ease;
+        }
+
+        .back-home:hover {
+            color: var(--primary-dark);
+        }
+
+        .back-home i {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Loading spinner on button */
+        .login-submit.loading {
+            pointer-events: none;
+            opacity: 0.75;
+        }
+
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255, 255, 255, 0.35);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        .login-submit.loading .spinner {
+            display: inline-block;
+        }
+
+        .login-submit.loading .btn-label {
+            display: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive tuning */
+        @media (max-width: 480px) {
+            .form-extras {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.55rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Animated background blobs (same as index.html) -->
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar glass-panel">
+        <a class="logo" href="index.html" aria-label="Ir al inicio">
+            <i data-lucide="heart-pulse" aria-hidden="true"></i>
+            <span>Salud Campus</span>
+        </a>
+
+        <div class="nav-links" aria-label="Navegación principal">
+            <a href="index.html" class="nav-btn">Inicio</a>
+            <a href="privacy.html" class="nav-btn">Políticas</a>
+            <a href="login.html" class="nav-btn active">
+                <i data-lucide="log-in" aria-hidden="true"></i>
+                <span>Iniciar Sesión</span>
+            </a>
+        </div>
+
+        <button type="button" class="mobile-menu-btn" id="mobile-menu-btn" aria-controls="mobile-menu"
+            aria-expanded="false" aria-label="Abrir menú">
+            <i data-lucide="menu" aria-hidden="true"></i>
+        </button>
+
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="index.html" class="mobile-nav-link">Inicio</a>
+            <a href="privacy.html" class="mobile-nav-link">Políticas de Privacidad</a>
+            <a href="login.html" class="mobile-nav-link active">
+                <i data-lucide="log-in" aria-hidden="true"></i>
+                <span>Iniciar Sesión</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="login-page-wrapper">
+        <div class="login-card glass-panel">
+
+            <!-- Brand icon -->
+            <div class="login-brand">
+                <i data-lucide="heart-pulse"></i>
+            </div>
+
+            <h1>Bienvenido de Nuevo</h1>
+            <p class="subtitle">Inicia sesión para acceder a tu cuenta de Salud Campus</p>
+
+            <!-- Login form -->
+            <form class="login-form" id="login-form" onsubmit="handleLogin(event)">
+
+                <!-- Error message -->
+                <div class="login-error" id="login-error">
+                    <i data-lucide="alert-circle"></i>
+                    <span id="error-text">Correo o contraseña incorrectos</span>
+                </div>
+
+                <!-- Email -->
+                <div class="field-group">
+                    <label for="login-email">Correo electrónico</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="mail" class="field-icon"></i>
+                        <input type="email" id="login-email" name="email" placeholder="tu@correo.com" required
+                            autocomplete="email">
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="field-group">
+                    <label for="login-password">Contraseña</label>
+                    <div class="input-wrapper">
+                        <i data-lucide="lock" class="field-icon"></i>
+                        <input type="password" id="login-password" name="password" placeholder="••••••••" required
+                            autocomplete="current-password" minlength="6">
+                        <button type="button" class="toggle-password" id="toggle-password"
+                            aria-label="Mostrar contraseña">
+                            <i data-lucide="eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember / Forgot -->
+                <div class="form-extras">
+                    <label class="remember-label">
+                        <input type="checkbox" id="remember-me" name="remember">
+                        Recordarme
+                    </label>
+                    <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="primary-btn login-submit" id="login-btn">
+                    <span class="btn-label">Iniciar Sesión</span>
+                    <span class="spinner"></span>
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">o</div>
+
+            <!-- Back link -->
+            <a href="index.html" class="back-home">
+                <i data-lucide="arrow-left"></i>
+                Volver al inicio
+            </a>
+        </div>
+    </main>
+
+    <script>
+        // ── Lucide icons ──
+        lucide.createIcons();
+
+        // ── Mobile menu toggle ──
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            const isOpen = mobileMenu.classList.toggle('active');
+            mobileMenuBtn.setAttribute('aria-expanded', isOpen);
+        });
+
+        // ── Show / hide password ──
+        const toggleBtn = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('login-password');
+
+        toggleBtn.addEventListener('click', () => {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            // Swap icon
+            toggleBtn.innerHTML = isPassword
+                ? '<i data-lucide="eye-off"></i>'
+                : '<i data-lucide="eye"></i>';
+            toggleBtn.setAttribute('aria-label', isPassword ? 'Ocultar contraseña' : 'Mostrar contraseña');
+            lucide.createIcons();
+        });
+
+        // ── Form submit handler ──
+        function handleLogin(e) {
+            e.preventDefault();
+
+            const errorEl = document.getElementById('login-error');
+            const btn = document.getElementById('login-btn');
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            // Hide previous error
+            errorEl.classList.remove('visible');
+
+            // Basic validation
+            if (!email || !password) {
+                showError('Por favor completa todos los campos');
+                return;
+            }
+
+            // Show loading state
+            btn.classList.add('loading');
+
+            // Simulate auth (replace with real authentication)
+            setTimeout(() => {
+                btn.classList.remove('loading');
+
+                // Demo: accept any valid email + password >= 6 chars
+                if (email && password.length >= 6) {
+                    // Success → redirect to main app
+                    window.location.href = 'index.html';
+                } else {
+                    showError('Correo o contraseña incorrectos');
+                }
+            }, 1200);
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('login-error');
+            document.getElementById('error-text').textContent = message;
+            errorEl.classList.add('visible');
+            // Re-render alert icon
+            lucide.createIcons();
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad | Salud Campus</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <nav class="navbar glass-panel">
+        <a class="logo" href="index.html" aria-label="Ir al inicio">
+            <i data-lucide="heart-pulse" aria-hidden="true"></i>
+            <span>Salud Campus</span>
+        </a>
+
+        <div class="nav-links" aria-label="Navegación principal">
+            <a href="index.html" class="nav-btn">Inicio</a>
+            <span class="nav-btn active" aria-current="page">Política de Privacidad</span>
+        </div>
+
+        <button type="button" class="mobile-menu-btn" id="mobile-menu-btn" aria-controls="mobile-menu"
+            aria-expanded="false" aria-label="Abrir menú">
+            <i data-lucide="menu" aria-hidden="true"></i>
+        </button>
+
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="index.html" class="mobile-nav-link">Inicio</a>
+            <span class="mobile-nav-link active" aria-current="page">Política de Privacidad</span>
+        </div>
+    </nav>
+
+    <main class="container privacy-container">
+        <div class="glass-panel content-panel">
+            <header class="privacy-header">
+                <h1>Política de Privacidad</h1>
+                <p class="subtitle">Última actualización: 20 de Marzo de 2026</p>
+            </header>
+
+            <section class="privacy-section">
+                <h2>1. Recopilación de Información</h2>
+                <p>Salud Campus es una aplicación diseñada para evaluar el bienestar de estudiantes y personal
+                    administrativo.
+                    Entendemos la importancia de tu privacidad, por lo que hemos diseñado este sistema para funcionar de
+                    manera <strong class="muted-highlight">anónima y local</strong>.</p>
+                <p>La aplicación no recopila información personal identificable (PII), como nombres completos,
+                    direcciones o números telefónicos. Asimismo, no cuenta con una base de datos centralizada en la nube
+                    para el almacenamiento de este tipo de información..</p>
+            </section>
+
+            <section class="privacy-section">
+                <h2>2. Almacenamiento de Datos</h2>
+                <p>Toda la información generada dentro de la aplicación, incluyendo respuestas, puntajes y el rol
+                    seleccionado, se almacena exclusivamente en el almacenamiento local (LocalStorage) del navegador web
+                    del usuario.
+                </p>
+                <ul>
+                    <li>Los datos permanecen únicamente en el dispositivo del usuario.</li>
+                    <li>Si se elimina la caché o los datos del navegador, la información almacenada se perderá de forma
+                        permanente.</li>
+                    <li>El administrador solo puede ver los datos acumulados si accede físicamente a este dispositivo o
+                        navegador.</li>
+                </ul>
+            </section>
+
+            <section class="privacy-section">
+                <h2>3. Uso de la Información</h2>
+                <p>La información recopilada se utiliza exclusivamente para:</p>
+                <ul>
+                    <li>Generar tu reporte de bienestar personal en PDF.</li>
+                    <li>Mostrar estadísticas generales en el panel de control administrativo (solo visible en este
+                        dispositivo).</li>
+                    <li>Enviar los resultados a tu correo electrónico (vía FormSubmit) solo si tú explícitamente lo
+                        solicitas.</li>
+                </ul>
+            </section>
+
+            <section class="privacy-section">
+                <h2>4. Tus Derechos</h2>
+                <p>Como usuario, tienes derecho a:</p>
+                <ul>
+                    <li>Que tu información sea tratada de forma segura y confidencial.</li>
+                    <li>Solicitar la eliminación de tus datos locales mediante el botón "Borrar Datos" en el panel
+                        administrativo.</li>
+                </ul>
+            </section>
+
+            <footer class="privacy-footer">
+                <button onclick="window.location.href='index.html'" class="primary-btn"><i data-lucide="arrow-left"></i>
+                    Volver al Inicio</button>
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const MOBILE_BREAKPOINT = 1024;
+        let isMenuOpen = false;
+
+        if (!menuBtn || !mobileMenu) {
+            lucide.createIcons();
+        } else {
+            function setMenuState(open) {
+                isMenuOpen = Boolean(open);
+                mobileMenu.classList.toggle('active', isMenuOpen);
+                menuBtn.setAttribute('aria-expanded', String(isMenuOpen));
+                menuBtn.setAttribute('aria-label', isMenuOpen ? 'Cerrar menú' : 'Abrir menú');
+                menuBtn.innerHTML = `<i data-lucide="${isMenuOpen ? 'x' : 'menu'}" aria-hidden="true"></i>`;
+                lucide.createIcons();
+            }
+
+            menuBtn.addEventListener('click', () => setMenuState(!isMenuOpen));
+
+            document.addEventListener('click', (event) => {
+                const navbar = document.querySelector('.navbar');
+                if (isMenuOpen && navbar && !navbar.contains(event.target)) {
+                    setMenuState(false);
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    setMenuState(false);
+                }
+            });
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > MOBILE_BREAKPOINT && isMenuOpen) {
+                    setMenuState(false);
+                }
+            });
+
+            setMenuState(false);
+        }
+    </script>
+</body>
+
+</html>

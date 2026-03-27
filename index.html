@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salud Campus | Evaluación de Bienestar</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts for Premium Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- jsPDF and AutoTable for Reporting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+</head>
+
+<body>
+
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <nav class="navbar glass-panel">
+        <a class="logo" href="index.html" aria-label="Ir al inicio">
+            <i data-lucide="heart-pulse" aria-hidden="true"></i>
+            <span>Salud Campus</span>
+        </a>
+
+        <div class="nav-links" aria-label="Navegación principal">
+            <button type="button" onclick="app.showHome(); app.closeMobileMenu()" class="nav-btn">Inicio</button>
+            <a href="privacy.html" class="nav-btn">Políticas</a>
+            <button type="button" onclick="app.toggleDashboard(); app.closeMobileMenu()" class="nav-btn nav-btn-admin">
+                <i data-lucide="lock" aria-hidden="true"></i>
+                <span>Admin</span>
+            </button>
+        </div>
+
+        <button type="button" class="mobile-menu-btn" id="mobile-menu-btn" aria-controls="mobile-menu"
+            aria-expanded="false" aria-label="Abrir menú">
+            <i data-lucide="menu" aria-hidden="true"></i>
+        </button>
+
+        <div class="mobile-menu" id="mobile-menu">
+            <button type="button" onclick="app.showHome(); app.closeMobileMenu()"
+                class="mobile-nav-link">Inicio</button>
+            <a href="privacy.html" class="mobile-nav-link" onclick="app.closeMobileMenu()">Políticas de Privacidad</a>
+            <button type="button" onclick="app.toggleDashboard(); app.closeMobileMenu()"
+                class="mobile-nav-link mobile-nav-admin">
+                <i data-lucide="lock" aria-hidden="true"></i>
+                <span>Acceso Admin</span>
+            </button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- VISTA: INICIO / SELECCIÓN DE ROL -->
+        <section id="view-home" class="view active fade-in">
+            <div class="hero-card glass-panel">
+                <h1>Bienvenido a tu Evaluación de Bienestar</h1>
+                <p class="subtitle">Descubre cómo tus hábitos, sueño y niveles de estrés impactan tu vida diaria.
+                    Selecciona tu perfil para comenzar.</p>
+
+                <div class="role-selection">
+                    <div class="role-card" onclick="app.startQuestionnaire('alumno')">
+                        <div class="icon-wrapper">
+                            <i data-lucide="graduation-cap"></i>
+                        </div>
+                        <h3>Soy Alumno</h3>
+                        <p>Evaluación enfocada en carga académica y hábitos de estudio.</p>
+                    </div>
+
+                    <div class="role-card" onclick="app.startQuestionnaire('admin')">
+                        <div class="icon-wrapper">
+                            <i data-lucide="briefcase"></i>
+                        </div>
+                        <h3>Soy Administrativo/Docente</h3>
+                        <p>Evaluación enfocada en balance vida-trabajo y estrés laboral.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA: FORMULARIO DE DATOS DEL USUARIO -->
+        <section id="view-student-form" class="view hidden">
+            <div class="student-form-container glass-panel">
+                <button onclick="app.showHome()" class="back-btn login-back-btn"><i data-lucide="arrow-left"></i>
+                    Volver</button>
+
+                <div class="student-form-icon" id="form-icon-wrap">
+                    <i data-lucide="graduation-cap"></i>
+                </div>
+
+                <h2 id="form-title">Datos del Alumno</h2>
+                <p class="subtitle">Completa tu información antes de comenzar la evaluación.</p>
+
+                <div class="student-fields">
+                    <div class="student-field-group">
+                        <label for="student-name">Nombre completo</label>
+                        <div class="student-input-wrap">
+                            <i data-lucide="user" class="student-field-icon"></i>
+                            <input type="text" id="student-name" placeholder="Ej. María López García" required>
+                        </div>
+                    </div>
+
+                    <div class="student-field-group">
+                        <label for="student-age">Edad</label>
+                        <div class="student-input-wrap">
+                            <i data-lucide="calendar" class="student-field-icon"></i>
+                            <input type="number" id="student-age" placeholder="Ej. 20" min="15" max="99" required>
+                        </div>
+                    </div>
+
+                    <div class="student-field-group">
+                        <label for="student-matricula">Matrícula</label>
+                        <div class="student-input-wrap">
+                            <i data-lucide="hash" class="student-field-icon"></i>
+
+                            <input type="text" id="student-matricula" placeholder="Ej. 01234567" maxlength="10"
+                                pattern="[0-9]{1,10}" inputmode="numeric"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+
+                        </div>
+                    </div>
+
+                    <div class="student-field-group">
+                        <label for="student-carrera" id="label-last-field">Carrera</label>
+                        <div class="student-input-wrap">
+                            <i data-lucide="book-open" class="student-field-icon" id="icon-last-field"></i>
+                            <select id="student-carrera" required>
+                                <option value="" disabled selected>Selecciona tu carrera</option>
+                                <option value="Sistemas Computacionales">Sistemas Computacionales</option>
+                                <option value="Administración">Administración</option>
+                                <option value="Administración de Empresas">Administración de Empresas</option>
+                                <option value="Comercio Internacional y Aduanas">Comercio Internacional y Aduanas
+                                </option>
+                                <option value="Comunicación">Comunicación</option>
+                                <option value="Contaduría y Finanzas">Contaduría y Finanzas</option>
+                                <option value="Criminología">Criminología</option>
+                                <option value="Derecho">Derecho</option>
+                                <option value="Diseño Gráfico">Diseño Gráfico</option>
+                                <option value="Idiomas">Idiomas</option>
+                                <option value="Mercadotecnia y Publicidad">Mercadotecnia y Publicidad</option>
+                                <option value="Psicología Social">Psicología Social</option>
+                                <option value="Relaciones Internacionales y Comercio Exterior">Relaciones
+                                    Internacionales y Comercio Exterior</option>
+                                <option value="Turismo">Turismo</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="student-field-group">
+                        <label for="seguro">¿Cuenta con algún tipo de seguro médico?</label>
+                        <div class="student-input-wrap">
+                            <i data-lucide="heart-pulse" class="student-field-icon" id="icon-last-field"></i>
+                            <select id="seguro" name="seguro" required>
+                                <option value="" disabled selected>Seleccione una opción</option>
+                                <option value="imss">IMSS</option>
+                                <option value="issste">ISSSTE</option>
+                                <option value="militar">Militar</option>
+                                <option value="otro">Otro</option>
+                                <option value="ninguno">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <p id="student-form-error" class="error-msg hidden">Por favor completa todos los campos.</p>
+
+                        <button onclick="app.submitStudentForm()" class="primary-btn student-submit-btn">
+                            Comenzar Evaluación <i data-lucide="arrow-right"></i>
+                        </button>
+                    </div>
+
+                </div>
+        </section>
+
+        <!-- VISTA: CUESTIONARIO -->
+        <section id="view-questionnaire" class="view hidden">
+            <div class="questionnaire-container glass-panel">
+                <header class="quiz-header">
+                    <button onclick="app.showHome()" class="back-btn"><i data-lucide="arrow-left"></i> Volver</button>
+                    <div id="section-steps" class="section-steps">
+                        <!-- Section steps rendered by JS -->
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <span id="question-count">Pregunta 1 de 9</span>
+                </header>
+
+                <div id="question-container" class="question-content fade-in">
+                    <!-- Las preguntas se inyectan aquí con JS -->
+                </div>
+
+                <div class="quiz-actions">
+                    <button id="btn-next" class="primary-btn" onclick="app.nextQuestion()">Siguiente <i
+                            data-lucide="arrow-right"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA: RESULTADOS -->
+        <section id="view-results" class="view hidden">
+            <div class="results-container glass-panel">
+                <div class="score-circle-wrapper">
+                    <svg class="progress-ring" width="120" height="120">
+                        <circle class="progress-ring__circle" stroke="white" stroke-width="8" fill="transparent" r="52"
+                            cx="60" cy="60" />
+                    </svg>
+                    <div class="score-text">
+                        <span id="final-score">0</span>
+                        <small>Puntos</small>
+                    </div>
+                </div>
+
+                <h2>Tu Reporte de Bienestar</h2>
+                <p id="result-summary">Basado en tus respuestas...</p>
+
+                <div class="recommendations-grid" id="recommendations-container">
+                    <!-- Recomendaciones inyectadas aquí -->
+                </div>
+
+                <div class="action-buttons">
+                    <div class="email-section">
+                        <form>"https://formsubmit.co/mayra.aguilar3001@gmail.com" method="POST" target="_blank"
+                            class="email-form">
+                            <!-- Hidden Fields populated by JS -->
+                            <input type="hidden" name="role" id="form-role">
+                            <input type="hidden" name="score" id="form-score">
+                            <input type="hidden" name="risk_level" id="form-risk">
+                            <input type="hidden" name="_subject" value="Nuevo Resultado de Salud Campus">
+                            <input type="hidden" name="_captcha" value="false">
+                            <input type="hidden" name="_next" value="http://127.0.0.1:5500/index.html">
+                            <!-- Adjust if needed or use auto return -->
+
+                            <input type="email" name="email" id="user-email" placeholder="Tu correo electrónico..."
+                                class="email-input" required>
+                            <button type="submit" class="primary-btn"><i data-lucide="mail"></i> Enviar
+                                Resultados</button>
+                        </form>
+                    </div>
+                    <div class="email-section" style="margin-top: 10px;">
+                        <button onclick="app.downloadUserPDF()" class="primary-btn secondary-btn"><i
+                                data-lucide="file-down"></i> Descargar Reporte PDF</button>
+                    </div>
+                    <button onclick="app.showHome()" class="secondary-btn home-return-btn">Volver al
+                        Inicio</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA: LOGIN ADMIN -->
+        <section id="view-login" class="view hidden">
+            <div class="login-container glass-panel">
+                <button onclick="app.showHome()" class="back-btn login-back-btn"><i data-lucide="arrow-left"></i>
+                    Volver</button>
+                <h2>Acceso Administrativo</h2>
+                <p class="subtitle">Ingresa la contraseña para ver el registro.</p>
+                <div class="input-group">
+                    <input type="password" id="admin-password" placeholder="Contraseña..."
+                        onkeypress="app.checkLoginEnter(event)">
+                    <button onclick="app.login()" class="primary-btn">Entrar</button>
+                    <p id="login-error" class="error-msg hidden">Contraseña incorrecta</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA: DASHBOARD (ADMIN) -->
+        <section id="view-dashboard" class="view hidden">
+            <div class="dashboard-container glass-panel">
+                <header class="dashboard-header">
+                    <h2>Panel de Control</h2>
+                    <div class="header-actions">
+                        <button onclick="app.downloadAdminPDF()" class="primary-btn small-btn"><i
+                                data-lucide="file-down"></i> Reporte PDF</button>
+                        <button onclick="app.showHome()" class="close-btn"><i data-lucide="x"></i></button>
+                    </div>
+                </header>
+
+                <!-- STATS CARDS -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i data-lucide="users"></i></div>
+                        <div class="stat-info">
+                            <h3>Total Registros</h3>
+                            <span id="stat-total">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i data-lucide="activity"></i></div>
+                        <div class="stat-info">
+                            <h3>Promedio Puntos</h3>
+                            <span id="stat-avg">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i data-lucide="alert-triangle"></i></div>
+                        <div class="stat-info">
+                            <h3>Riesgo Alto</h3>
+                            <span id="stat-high-risk">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CHARTS (Simple CSS Bars) -->
+                <div class="charts-section glass-panel-inner">
+                    <h3>Distribución de Riesgo</h3>
+                    <div class="risk-bar-chart">
+                        <div class="risk-bar-group">
+                            <span class="label">Bajo</span>
+                            <div class="bar-track">
+                                <div class="bar-fill low" id="bar-low"></div>
+                            </div>
+                            <span class="count" id="count-low">0</span>
+                        </div>
+                        <div class="risk-bar-group">
+                            <span class="label">Moderado</span>
+                            <div class="bar-track">
+                                <div class="bar-fill medium" id="bar-medium"></div>
+                            </div>
+                            <span class="count" id="count-medium">0</span>
+                        </div>
+                        <div class="risk-bar-group">
+                            <span class="label">Alto</span>
+                            <div class="bar-track">
+                                <div class="bar-fill high" id="bar-high"></div>
+                            </div>
+                            <span class="count" id="count-high">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="section-title">Detalle de Registros</h3>
+                <div class="table-wrapper">
+                    <table id="stats-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Rol</th>
+                                <th>Puntaje</th>
+                                <th>Nivel de Riesgo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stats-body">
+                            <!-- Datos inyectados aquí -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="dashboard-footer">
+                    <p><small>* Los datos son anónimos y se almacenan localmente en este dispositivo.</small></p>
+                    <button onclick="app.clearData()" class="danger-btn"><i data-lucide="trash-2"></i> Borrar
+                        Datos</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
