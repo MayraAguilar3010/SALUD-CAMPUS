@@ -551,7 +551,7 @@ const app = {
     login: () => {
         const pass = document.getElementById('admin-password').value;
         // Contraseña de admin
-        if (pass === 'mayraperrilla') {
+        if (pass === 'unimexsc') {
             app.renderDashboard();
             app.showView('view-dashboard');
         } else {
