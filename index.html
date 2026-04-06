@@ -222,7 +222,7 @@
 
                 <div class="action-buttons">
                     <div class="email-section">
-                        <form>"https://formsubmit.co/mayra.aguilar3001@gmail.com" method="POST" target="_blank"
+                        <form action="https://formsubmit.co/mayra.aguilar3001@gmail.com" method="POST" target="_blank"
                             class="email-form">
                             <!-- Hidden Fields populated by JS -->
                             <input type="hidden" name="role" id="form-role">
@@ -233,15 +233,11 @@
                             <input type="hidden" name="_next" value="http://127.0.0.1:5500/index.html">
                             <!-- Adjust if needed or use auto return -->
 
-                            <input type="email" name="email" id="user-email" placeholder="Tu correo electrónico..."
-                                class="email-input" required>
-                            <button type="submit" class="primary-btn"><i data-lucide="mail"></i> Enviar
-                                Resultados</button>
                         </form>
                     </div>
                     <div class="email-section" style="margin-top: 10px;">
                         <button onclick="app.downloadUserPDF()" class="primary-btn secondary-btn"><i
-                                data-lucide="file-down"></i> Descargar Reporte PDF</button>
+                                data-lucide="file-down"></i> Reporte PDF</button>
                     </div>
                     <button onclick="app.showHome()" class="secondary-btn home-return-btn">Volver al
                         Inicio</button>

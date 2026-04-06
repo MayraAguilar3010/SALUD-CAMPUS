@@ -37,7 +37,7 @@ const database = {
             options: [
                 { text: 'Constantemente', score: 0 },
                 { text: 'Frecuentemente', score: 4 },
-                { text: 'Ocacionalmente', score: 7 },
+                { text: 'Ocasionalmente', score: 7 },
                 { text: 'Casi nunca', score: 10 }
             ]
         },
